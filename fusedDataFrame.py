@@ -68,20 +68,17 @@ for i in range(len(accomplish)):
     golden_copy = golden_copy[golden_copy["Time"] == accomplish["Shift"][i]]
     accomplish.at[i, "# of volunteers"] = len(golden_copy)
 
-
-golden = golden[golden["Date"] == date(2024, 4, 11)]
-golden = golden[golden["Time"] == "Morning"]
-print(len(golden))
-
-
-accomplish = accomplish[accomplish["# of volunteers"] != 0]
-
-
-
-
-
+#makes the sheets
 golden.to_excel('GoldenPackage.xlsx', index = False)
 accomplish.to_excel('AccomplishmentPackage.xlsx', index = False)
 
+
+#makes the plots for me
 accomplish.plot(kind = 'scatter', x = '# of volunteers', y = "Total Pounds Gleaned")
 plt.savefig("boxestrial.png")
+
+
+#sets up total
+print(accomplish["Total Boxes Kitted"].sum())
+
+accomplish.describe()
