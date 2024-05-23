@@ -3,6 +3,7 @@ from datetime import date
 import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn import linear_model
 
 #sets up the pages that are going to be used
 accomplish = pd.read_excel('accomplishment_2.xlsx', 
@@ -24,6 +25,7 @@ for i in range(0, len(accomplish)):
         accomplish.loc[i, "Date"] = accomplish.loc[i - 1, "Date"]
 accomplish["Date"] = pd.to_datetime(accomplish["Date"]).dt.date
 accomplish["Shift"] = accomplish["Shift"].str.replace(" ", "")
+accomplish['Total Boxes Kitted'] = accomplish['Total Boxes Kitted'].astype(int)
 
 
 #fixes golden
@@ -68,17 +70,41 @@ for i in range(len(accomplish)):
     golden_copy = golden_copy[golden_copy["Time"] == accomplish["Shift"][i]]
     accomplish.at[i, "# of volunteers"] = len(golden_copy)
 
+
+accomplish = accomplish[accomplish["# of volunteers"] != 0]
+
 #makes the sheets
 golden.to_excel('GoldenPackage.xlsx', index = False)
 accomplish.to_excel('AccomplishmentPackage.xlsx', index = False)
 
 
 #makes the plots for me
-accomplish.plot(kind = 'scatter', x = '# of volunteers', y = "Total Pounds Gleaned")
-plt.savefig("boxestrial.png")
+#accomplish.plot(kind = 'scatter', x = '# of volunteers', y = "Total Pounds Gleaned")
+#plt.savefig("boxestrial.png")
 
+#seperate plot
+#plt.scatter(accomplish['# of volunteers'],accomplish['Total Pounds Gleaned'], color = 'lightcoral')
+#plt.title('# of volunteers vs Total Pounds Gleaned')
+#plt.ylabel('Total Pounds Gleaned')
+#plt.xlabel('# of volunteers')
+#plt.box(False)
+#plt.show()
 
 #sets up total
-print(accomplish["Total Boxes Kitted"].sum())
+#print(accomplish["Total Boxes Kitted"].sum())
 
-accomplish.describe()
+
+#accomplishment stats
+print(accomplish.describe())
+
+X = accomplish[['Total Pounds Gleaned', 'Total Boxes Kitted', 'Total Pounds of Reclamation', 'Backpack program']]
+y = accomplish['# of volunteers']
+
+regr = linear_model.LinearRegression()
+regr.fit(X, y)
+
+#predict the # of volunteer base on the number of gleaned, reclaimed, kitted, and backpacks:
+predictedCO2 = regr.predict([[4000, 0, 0, 200]])
+
+print(predictedCO2)
+print(regr.coef_)
