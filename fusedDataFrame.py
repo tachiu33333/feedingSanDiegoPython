@@ -4,6 +4,7 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn import linear_model
+from statistics import linear_regression
 
 #sets up the pages that are going to be used
 accomplish = pd.read_excel('accomplishment_2.xlsx', 
@@ -72,6 +73,10 @@ for i in range(len(accomplish)):
 
 
 accomplish = accomplish[accomplish["# of volunteers"] != 0]
+#accomplish = accomplish[accomplish['Total Pounds Gleaned'] != 0]
+#accomplish = accomplish[accomplish['Total Boxes Kitted'] != 0]
+#accomplish = accomplish[accomplish['Total Pounds of Reclamation'] != 0]
+#accomplish = accomplish[accomplish['Backpack program'] != 0]
 
 #makes the sheets
 golden.to_excel('GoldenPackage.xlsx', index = False)
@@ -79,8 +84,19 @@ accomplish.to_excel('AccomplishmentPackage.xlsx', index = False)
 
 
 #makes the plots for me
-#accomplish.plot(kind = 'scatter', x = '# of volunteers', y = "Total Pounds Gleaned")
-#plt.savefig("boxestrial.png")
+accomplish.plot(kind = 'scatter', x = '# of volunteers', y = "Total Pounds Gleaned")
+plt.savefig("gleantrial.png")
+
+accomplish.plot(kind = 'scatter', x = '# of volunteers', y = 'Total Boxes Kitted')
+plt.savefig("boxestrial.png")
+
+accomplish.plot(kind = 'scatter', x = '# of volunteers', y = 'Total Pounds of Reclamation')
+plt.savefig("reclaimtrial.png")
+
+accomplish.plot(kind = 'scatter', x = '# of volunteers', y = 'Backpack program')
+plt.savefig("backpacktrial.png")
+
+
 
 #seperate plot
 #plt.scatter(accomplish['# of volunteers'],accomplish['Total Pounds Gleaned'], color = 'lightcoral')
@@ -97,14 +113,28 @@ accomplish.to_excel('AccomplishmentPackage.xlsx', index = False)
 #accomplishment stats
 print(accomplish.describe())
 
+
+#predict the # of volunteer base on the number of gleaned, reclaimed, kitted, and backpacks:
 X = accomplish[['Total Pounds Gleaned', 'Total Boxes Kitted', 'Total Pounds of Reclamation', 'Backpack program']]
+#X = accomplish[['Total Pounds Gleaned']]
 y = accomplish['# of volunteers']
 
 regr = linear_model.LinearRegression()
 regr.fit(X, y)
 
-#predict the # of volunteer base on the number of gleaned, reclaimed, kitted, and backpacks:
-predictedCO2 = regr.predict([[4000, 0, 0, 200]])
+predictedCO2 = regr.predict([[4000, 0, 0, 400]])
+#predictedCO2 = regr.predict([[4000]])
 
 print(predictedCO2)
 print(regr.coef_)
+
+#predict the # of volunteer base on the number of gleaned, reclaimed, kitted, and backpacks:
+#A = accomplish[['Total Pounds Gleaned']]
+#b = accomplish['# of volunteers']
+
+#regre = linear_model.LinearRegression()
+#regre.fit(A, b)
+
+#predictedCO = regre.predict([[100]])
+
+#print(predictedCO)
