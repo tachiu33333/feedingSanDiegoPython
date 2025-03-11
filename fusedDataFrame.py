@@ -69,10 +69,20 @@ shift = ["Morning", "Mid Afternoon", "Afternoon", "Evening"]
 for i in range(len(accomplish)):
     golden_copy = golden[golden["Date"] == accomplish["Date"][i]]
     golden_copy = golden_copy[golden_copy["Time"] == accomplish["Shift"][i]]
-    accomplish.at[i, "# of volunteers"] = len(golden_copy)
+    #if len(golden_copy)
+    if len(golden_copy) < 15:
+        accomplish.at[i, "# of volunteers"] = "Small"
+    elif len(golden_copy) < 30:
+        accomplish.at[i, "# of volunteers"] = "Medium"
+    else:
+        accomplish.at[i, "# of volunteers"] = "Large"
 
-
-accomplish = accomplish[accomplish["# of volunteers"] != 0]
+#print(len(accomplish))
+#accomplish = accomplish[accomplish["# of volunteers"] > 14]
+print(len(accomplish[accomplish["# of volunteers"] == "Small"]))
+#print(len(accomplish))
+#accomplish = accomplish[accomplish["# of volunteers"] < 30]
+#print(len(accomplish))
 #accomplish = accomplish[accomplish['Total Pounds Gleaned'] != 0]
 #accomplish = accomplish[accomplish['Total Boxes Kitted'] != 0]
 #accomplish = accomplish[accomplish['Total Pounds of Reclamation'] != 0]
@@ -84,17 +94,17 @@ accomplish.to_excel('AccomplishmentPackage.xlsx', index = False)
 
 
 #makes the plots for me
-accomplish.plot(kind = 'scatter', x = '# of volunteers', y = "Total Pounds Gleaned")
-plt.savefig("gleantrial.png")
+#accomplish.plot(kind = 'scatter', x = '# of volunteers', y = "Total Pounds Gleaned")
+#plt.savefig("gleantrial.png")
 
-accomplish.plot(kind = 'scatter', x = '# of volunteers', y = 'Total Boxes Kitted')
-plt.savefig("boxestrial.png")
+#accomplish.plot(kind = 'scatter', x = '# of volunteers', y = 'Total Boxes Kitted')
+#plt.savefig("boxestrial.png")
 
-accomplish.plot(kind = 'scatter', x = '# of volunteers', y = 'Total Pounds of Reclamation')
-plt.savefig("reclaimtrial.png")
+#accomplish.plot(kind = 'scatter', x = '# of volunteers', y = 'Total Pounds of Reclamation')
+#plt.savefig("reclaimtrial.png")
 
-accomplish.plot(kind = 'scatter', x = '# of volunteers', y = 'Backpack program')
-plt.savefig("backpacktrial.png")
+#accomplish.plot(kind = 'scatter', x = '# of volunteers', y = 'Backpack program')
+#plt.savefig("backpacktrial.png")
 
 
 
@@ -111,22 +121,22 @@ plt.savefig("backpacktrial.png")
 
 
 #accomplishment stats
-print(accomplish.describe())
+#print(accomplish.describe())
 
 
 #predict the # of volunteer base on the number of gleaned, reclaimed, kitted, and backpacks:
-X = accomplish[['Total Pounds Gleaned', 'Total Boxes Kitted', 'Total Pounds of Reclamation', 'Backpack program']]
+#X = accomplish[['Total Pounds Gleaned', 'Total Boxes Kitted', 'Total Pounds of Reclamation', 'Backpack program']]
 #X = accomplish[['Total Pounds Gleaned']]
-y = accomplish['# of volunteers']
+#y = accomplish['# of volunteers']
 
-regr = linear_model.LinearRegression()
-regr.fit(X, y)
+#regr = linear_model.LinearRegression()
+#regr.fit(X, y)
 
-predictedCO2 = regr.predict([[4000, 0, 0, 400]])
+#predictedCO2 = regr.predict([[4000, 0, 0, 400]])
 #predictedCO2 = regr.predict([[4000]])
 
-print(predictedCO2)
-print(regr.coef_)
+#print(predictedCO2)
+#print(regr.coef_)
 
 #predict the # of volunteer base on the number of gleaned, reclaimed, kitted, and backpacks:
 #A = accomplish[['Total Pounds Gleaned']]
